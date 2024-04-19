@@ -15,19 +15,23 @@ load_dotenv()
 client_id = os.getenv('SPOTIPY_CLIENT_ID')
 client_secret = os.getenv('SPOTIPY_CLIENT_SECRET')
 client_redirect = os.getenv('SPOTIPY_REDIRECT_URI')
+print(client_redirect)
+
 
 # client_credentials_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
 # sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 
 
-util.prompt_for_user_token(username='natalieparent9',
+token = util.prompt_for_user_token(username='natalieparent9',
                            scope=scope,
                            client_id=client_id,
                            client_secret=client_secret,
                            redirect_uri=client_redirect)
 
 
+sp = spotipy.Spotify(auth=token)
+
 results = sp.current_user_saved_tracks()
 
-print(sys.argv)
+
