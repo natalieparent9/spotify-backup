@@ -7,6 +7,9 @@ import os
 import spotipy.util as util
 import sys
 from spotipy.oauth2 import SpotifyClientCredentials
+import pandas as pd
+from datetime import datetime
+import openpyxl
 
 # Set scope
 scope = 'user-library-read'
@@ -26,10 +29,13 @@ token = util.prompt_for_user_token(username='natalieparent9',
                            redirect_uri=client_redirect)
 
 
+
 sp = spotipy.Spotify(auth=token)
 
-# Get my saved songs
-results = sp.current_user_saved_tracks()
+
+
+# Explore
+results = sp.current_user_saved_tracks(limit=10, offset=10) # cant seem to get more than 50 at a time
 
 # See what is in the results
 print(results.keys())
@@ -46,7 +52,46 @@ print(type(items[1]['track']['artists'])) # list
 print(items[1]['track']['artists'][0])  # 1 does not exist
 print(items[1]['track']['artists'][0]['name']) # artist name
 
+#############################
 
-for item in results['items']:
-    track = item['track']
-    print(track['name'] + ' - ' + track['artists'][0]['name'])
+
+# Initialize an empty list to store all the songs
+all_songs = []
+
+# Set the initial offset to 0
+offset = 0
+
+# Set the limit for each request
+limit = 50
+
+# Fetch the first batch of songs
+results = sp.current_user_saved_tracks(limit=limit, offset=offset)
+
+# Extract the first batch of items
+all_songs.extend(results['items'])
+
+# if having issues try restarting terminal
+# Fetch subsequent batches of songs until all songs are retrieved
+while len(all_songs) < results['total']:
+    print(offset)
+    offset += limit
+    results = sp.current_user_saved_tracks(limit=limit, offset=offset)
+    all_songs.extend(results['items'])
+    print(len(all_songs))
+
+# Extract song names and artists from the results
+songs = [item['track']['name'] for item in all_songs]
+artists = [', '.join(artist['name'] for artist in item['track']['artists']) for item in all_songs]
+print(len(songs))
+
+# Create a DataFrame
+df = pd.DataFrame({'Song': songs, 'Artist': artists})
+
+# First three songs and artists
+df[0:3]
+df[0:40]
+
+# Save
+today_date = datetime.now().strftime('%Y-%m-%d')
+file_path = f'mysongs_{today_date}.xlsx'
+df.to_excel(file_path, index=False)
