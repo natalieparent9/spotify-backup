@@ -1,15 +1,12 @@
 
-# pip3 install spotipy
+# Save an excel sheet of all my liked songs and their artists on Spotify
 
 import spotipy
 from dotenv import load_dotenv
 import os
 import spotipy.util as util
-import sys
-from spotipy.oauth2 import SpotifyClientCredentials
 import pandas as pd
 from datetime import datetime
-import openpyxl
 
 # Set scope
 scope = 'user-library-read'
@@ -20,7 +17,6 @@ client_id = os.getenv('SPOTIPY_CLIENT_ID')
 client_secret = os.getenv('SPOTIPY_CLIENT_SECRET')
 client_redirect = os.getenv('SPOTIPY_REDIRECT_URI')
 
-
 # Authenticate
 token = util.prompt_for_user_token(username='natalieparent9',
                            scope=scope,
@@ -29,28 +25,27 @@ token = util.prompt_for_user_token(username='natalieparent9',
                            redirect_uri=client_redirect)
 
 
-
 sp = spotipy.Spotify(auth=token)
 
 
 
 # Explore
-results = sp.current_user_saved_tracks(limit=10, offset=10) # cant seem to get more than 50 at a time
+# results = sp.current_user_saved_tracks(limit=10, offset=10) # cant seem to get more than 50 at a time
 
-# See what is in the results
-print(results.keys())
-print(type(results)) # dictionary
+# # See what is in the results
+# print(results.keys())
+# print(type(results)) # dictionary
 
-items = results['items']
-print(type(items)) # list
-print(items[1]) # items is a list of dictionaries
-print(items[1].keys()) # dictionary contains added_at and track
-print(items[1]['track'].keys()) # track is also a dictionary
-print(items[1]['track']['name']) # name of the song
-print(items[1]['track']['artists']) 
-print(type(items[1]['track']['artists'])) # list
-print(items[1]['track']['artists'][0])  # 1 does not exist
-print(items[1]['track']['artists'][0]['name']) # artist name
+# items = results['items']
+# print(type(items)) # list
+# print(items[1]) # items is a list of dictionaries
+# print(items[1].keys()) # dictionary contains added_at and track
+# print(items[1]['track'].keys()) # track is also a dictionary
+# print(items[1]['track']['name']) # name of the song
+# print(items[1]['track']['artists']) 
+# print(type(items[1]['track']['artists'])) # list
+# print(items[1]['track']['artists'][0])  # 1 does not exist
+# print(items[1]['track']['artists'][0]['name']) # artist name
 
 #############################
 
@@ -91,7 +86,12 @@ df = pd.DataFrame({'Song': songs, 'Artist': artists})
 df[0:3]
 df[0:40]
 
+df = df.drop_duplicates()
+print(len(df))
+
 # Save
-today_date = datetime.now().strftime('%Y-%m-%d')
+today_date = datetime.now().strftime('%Y_%m_%d')
 file_path = f'mysongs_{today_date}.xlsx'
 df.to_excel(file_path, index=False)
+
+
