@@ -2,19 +2,25 @@
 
 ## Description
 
-This program saves an excel sheet with the names and artists of all the songs saved in Spotify liked songs library. No more anxiety about accidental loss of all those meticulously accumulated songs.
+This program saves a .csv file with the names and artists of all the songs saved in Spotify liked songs library. No more anxiety about accidental loss of all those meticulously accumulated songs.
 
 ## Getting Started
 
 ### Dependencies
 
-- Python 3.x
-- Spotify account
+- Spotify access token
+- Python 3.11.5
+- Spotipy 2.23.0
+- Pandas 2.0.3
+- Made for MacOS, untested on Windows
 
 ### Installing
 
-1. Clone this repository.
-2. Install the required dependencies using pip install -r requirements.txt.
+1. Create an app on Spotify to get credentials for access token <a href="https://developer.spotify.com/documentation/web-api">Spotify Web API</a>
+2. Set the redirect URI in your app settings to: 'http://localhost:8888/callback'
+[](redirect_uri.png)
+
+3. Install the required dependencies using pip install -r requirements.txt.
 
 ### Executing program
 
